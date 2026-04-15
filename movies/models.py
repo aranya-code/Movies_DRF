@@ -8,11 +8,11 @@ class Movies(models.Model):
                         ('Span', 'Spanish'),
                         ('Fre', 'French')]
     movie_name = models.CharField(max_length=255, unique=True)
-    director = models.CharField()
+    director = models.CharField(max_length=100)
     released_year = models.IntegerField()
     story = models.TextField()
     budget = models.DecimalField(max_digits=10, decimal_places=4)
-    language = models.CharField(choices=language_choices)
+    language = models.CharField(max_length=50, choices=language_choices)
     
 
 
