@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies API Dashboard</title>
+
     <style>
         :root {
             --primary: #2563eb;
@@ -18,45 +19,45 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        
+
         body { background-color: var(--bg); color: var(--text); padding: 2rem; }
-        
+
         header { margin-bottom: 2rem; border-bottom: 2px solid var(--border); padding-bottom: 1rem; }
         header h1 { font-size: 1.8rem; color: var(--primary); }
 
         .container { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; max-width: 1200px; margin: 0 auto; }
-        
+
         .card { background: var(--surface); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); }
         .card h2 { margin-bottom: 1rem; font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
 
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; margin-bottom: 0.25rem; font-size: 0.9rem; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; 
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem;
         }
         .form-group textarea { resize: vertical; min-height: 80px; }
 
-        button { 
-            background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; 
-            cursor: pointer; font-weight: 500; transition: background 0.2s; 
+        button {
+            background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px;
+            cursor: pointer; font-weight: 500; transition: background 0.2s;
         }
         button:hover { background: var(--primary-hover); }
         button.danger { background: var(--danger); }
-        
+
         /* Movie List Styles */
         #movie-list { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-        .movie-item { 
-            padding: 1rem; border: 1px solid var(--border); border-radius: 6px; 
+        .movie-item {
+            padding: 1rem; border: 1px solid var(--border); border-radius: 6px;
             display: flex; justify-content: space-between; align-items: center; background: var(--bg);
         }
         .movie-item:hover { border-color: var(--primary); }
         .movie-info h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
         .movie-info p { font-size: 0.85rem; color: var(--text-light); }
-        
+
         /* Modal Styles */
-        .modal-overlay { 
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; 
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
         }
         .modal { background: var(--surface); padding: 2rem; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
@@ -66,12 +67,34 @@
         .ratings-section { margin-top: 1.5rem; background: var(--bg); padding: 1rem; border-radius: 6px; }
         .rating-card { border-bottom: 1px solid var(--border); padding: 0.5rem 0; }
         .rating-card:last-child { border-bottom: none; }
-        
+
         .toast {
             position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white;
             padding: 1rem; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none;
         }
 
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            /* Reduce outer margins for small screens */
+            body { padding: 1rem; }
+
+            /* Stack the main layout vertically */
+            .container { grid-template-columns: 1fr; }
+
+            /* Stack the Budget/Delete buttons in the modal */
+            .modal div[style*="display: flex"] {
+                flex-wrap: wrap;
+            }
+            .modal div[style*="display: flex"] > * {
+                width: 100%;
+                margin-left: 0 !important;
+            }
+
+            /* Stack the reviewer name and rating inputs */
+            #add-rating-form div[style*="display: grid"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -133,7 +156,7 @@
                 <h2 id="modal-title">Movie Details</h2>
                 <button class="close-btn" onclick="closeModal()">×</button>
             </div>
-            
+
             <div id="modal-content" style="margin-bottom: 1.5rem; line-height: 1.6;">
                 </div>
 
@@ -176,7 +199,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             fetchMovies();
-            
+
             document.getElementById('add-movie-form').addEventListener('submit', handleAddMovie);
             document.getElementById('add-rating-form').addEventListener('submit', handleAddRating);
         });
@@ -195,10 +218,10 @@
                 const response = await fetch(`${BASE_URL}/movie/add/`);
                 if (!response.ok) throw new Error('Failed to fetch');
                 const data = await response.json();
-                
+
                 const list = document.getElementById('movie-list');
                 list.innerHTML = '';
-                
+
                 data.forEach(movie => {
                     list.innerHTML += `
                         <div class="movie-item">
@@ -219,7 +242,7 @@
         // --- POST NEW MOVIE ---
         async function handleAddMovie(e) {
             e.preventDefault();
-            
+
             const payload = {
                 movie_name: document.getElementById('movie_name').value,
                 director: document.getElementById('director').value,
@@ -237,7 +260,7 @@
                 });
 
                 const data = await response.json();
-                
+
                 if (response.status === 201) {
                     showToast('Movie created successfully!');
                     document.getElementById('add-movie-form').reset();
@@ -256,7 +279,7 @@
             try {
                 const response = await fetch(`${BASE_URL}/movie/movie_detail/${id}`);
                 const movie = await response.json();
-                
+
                 document.getElementById('modal-title').textContent = movie.movie_name;
                 document.getElementById('modal-content').innerHTML = `
                     <p><strong>Director:</strong> ${movie.director}</p>
@@ -337,7 +360,7 @@
         // --- POST NEW RATING ---
         async function handleAddRating(e) {
             e.preventDefault();
-            
+
             const payload = {
                 reviewer: document.getElementById('reviewer').value,
                 rating: parseFloat(document.getElementById('rating_val').value),
@@ -353,7 +376,7 @@
                 });
 
                 const data = await response.json();
-                
+
                 if (response.status === 201) {
                     showToast('Review added!');
                     document.getElementById('add-rating-form').reset();
