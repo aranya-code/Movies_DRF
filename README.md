@@ -18,7 +18,11 @@ This project demonstrates CRUD operations, relational data handling, validation,
 * 📊 Ratings sorted in ascending order
 
 ---
+# Movie Dashboard
 
+**[🚀 View the Live Demo Here](https://aranya.pythonanywhere.com)**
+
+---
 ## 🛠️ Tech Stack
 
 * Python 3.x
