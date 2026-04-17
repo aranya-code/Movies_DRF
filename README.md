@@ -18,7 +18,7 @@ This project demonstrates CRUD operations, relational data handling, validation,
 * 📊 Ratings sorted in ascending order
 
 ---
-# Movie Dashboard
+## 🎥 Movie Dashboard
 
 **[🚀 View the Live Demo Here](https://aranya.pythonanywhere.com)**
 
@@ -48,6 +48,33 @@ Movies_DRF/
 │   ├── urls.py
 │
 └── manage.py
+```
+---
+
+## 🔀 Entity Relationship Diagram
+
+```mermaid
+erDiagram
+    MOVIES ||--o{ RATING : "has"
+    
+    MOVIES {
+        int id PK "Auto-generated"
+        varchar movie_name "Unique"
+        varchar director
+        int released_year
+        text story
+        decimal budget
+        varchar language "Eng/Beng/Span/Fre"
+    }
+    
+    RATING {
+        int id PK "Auto-generated"
+        varchar reviewer
+        text review
+        float rating
+        int movie_id FK "Refers to Movies.id"
+    }
+
 ```
 
 ---
